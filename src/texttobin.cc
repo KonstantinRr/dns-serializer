@@ -2,12 +2,12 @@
 
 using namespace std;
 
-int textToBin(ifstream &in, ofstream &out)
+state textToBin(ifstream &in, ofstream &out)
 {
     in.seekg(0, ios::end);  // seeks to the end of file
                             // gets the file size
     size_t size = static_cast<size_t>(in.tellg());
-    in.seekg(0);            // seeks back to the beginning
+    in.seekg(0, ios::beg);            // seeks back to the beginning
 
     out.put(MAGIC); // write the magic byte at the beginning
                     // writes the amount of binary chars coming
@@ -20,8 +20,8 @@ int textToBin(ifstream &in, ofstream &out)
     {
         char inChar;
         in.get(inChar); // reads the next char from in
-        if (in.fail())  // performs fast error checking
-            return -3;
+        if (!in.eof() && in.fail())  // performs fast error checking
+            return s_err_read_input;
 
         switch (inChar)
         {
@@ -36,7 +36,8 @@ int textToBin(ifstream &in, ofstream &out)
                 writeData |= 3 << shift;
                 break;
             default:
-                return -5;  // error code -5: invalid character
+                // error code -5: invalid character
+                return s_err_unknown_char;
         }
 
         shift += 2;         // moves the shift by two bits
@@ -44,7 +45,8 @@ int textToBin(ifstream &in, ofstream &out)
         {
             out.put(writeData);
             if (out.fail()) // fast error checking
-                return -4;  // err -4: error writing output file
+                // err -4: error writing output file
+                return s_err_write_output;
             writeData = 0;
             shift = 0;
         }
@@ -54,7 +56,8 @@ int textToBin(ifstream &in, ofstream &out)
     {
         out.put(writeData);
         if (out.fail())     // fast error checking
-            return -4;      // err -4: error writing output file
+            // err -4: error writing output file
+            s_err_write_output;
     }
-    return 0;
+    return s_success;
 }

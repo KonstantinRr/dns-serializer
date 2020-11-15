@@ -2,19 +2,19 @@
 
 using namespace std;
 
-int copyFile(ifstream &in, ofstream &out)
+state copyFile(ifstream &in, ofstream &out)
 {
     int const size = 8192;  // we choose a large buffer size
-    char buffer[size];      // we initialize the buffer
+    char buffer[size];      // we create the buffer
     while (!in.eof())
     {
         in.read(buffer, size); // read in the buffer 
-        if (!in.eof() && in.fail())      // error during input reading
-            return -3;      // err -3: error reading input file
+        if (!in.eof() && in.fail())  // error during input reading
+            return s_err_read_input; // err -3: error reading input file
         
         out.write(buffer, in.gcount()); // write from the buffer
-        if (out.fail())     // error during output writing
-            return -4;      // err -4: error writing output file
+        if (out.fail()) // error during output writing
+            return s_err_write_output;  // err -4: error writing output file
     }
-    return 0;
+    return s_success;
 }

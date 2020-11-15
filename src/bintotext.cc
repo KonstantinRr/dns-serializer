@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int binToText(ifstream &in, ofstream &out)
+state binToText(ifstream &in, ofstream &out)
 {       
     // static conversion table
     const char convTable[] = { 'A', 'C', 'T', 'G' };
@@ -20,16 +20,16 @@ int binToText(ifstream &in, ofstream &out)
         {
             in.get(data);   // reads the next byte
             if (!in)        // fast error checking
-                return -3;  // err -3: error reading input file
+                return s_err_read_input; // err: error reading input file
         }
                             // read two bits from the bytes
         out.put(convTable[(data >> shift) & 0b11]);
         if (out.fail())     // fast error checking
-            return -4;      // err -4: error writing output file
+            return s_err_write_output;      // err -4: error writing output file
             
         shift += 2;     // characters are two bits wide
                         // returns the shift to zero if shift == 8
         shift = shift == 8 ? 0 : shift;
     }
-    return 0;
+    return s_success;
 }
