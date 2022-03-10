@@ -1,4 +1,4 @@
-# DNS Saver
+# DNS Serializer
 
 ![Latest Build](https://github.com/KonstantinRr/dns-saver/workflows/CMake/badge.svg)
 
